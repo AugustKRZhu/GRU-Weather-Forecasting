@@ -28,6 +28,10 @@ def split_dataset(data):
 # evaluate one or more weekly forecasts against expected values
 def evaluate_forecasts(actual, predicted):
     scores = list()
+    days = ['sun', 'mon', 'tue', 'wed', 'thr', 'fri', 'sat']
+    pyplot.plot(days, actual[1, :])
+    pyplot.plot(days, predicted[1, :])
+    pyplot.show()
     # calculate an RMSE score for each day
     for i in range(actual.shape[1]):
         # calculate mse
@@ -148,5 +152,4 @@ summarize_scores('lstm', score, scores)
 # plot scores
 days = ['sun', 'mon', 'tue', 'wed', 'thr', 'fri', 'sat']
 pyplot.plot(days, scores,  marker='o', label='lstm')
-pyplot.plot(days, test[:, :, 0].shape[1],  marker='x', label='test')
 pyplot.show()

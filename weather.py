@@ -136,19 +136,21 @@ signal = 0
 
 validation_data = (np.expand_dims(x_test_scaled, axis=0), np.expand_dims(y_test_scaled, axis=0))
 
-# model = tf.keras.Sequential()
-# model.add(tf.keras.layers.GRU(units=64, return_sequences=True, input_shape=(None, num_x_signals,)))
-# model.add(tf.keras.layers.Dense(num_y_signals, activation='sigmoid'))
-
 model = tf.keras.Sequential()
-model.add(tf.keras.layers.Conv1D(filters=64, kernel_size=3, activation='relu', input_shape=(sequence_length, num_x_signals)))
-model.add(tf.keras.layers.Conv1D(filters=64, kernel_size=3, activation='relu'))
-model.add(tf.keras.layers.MaxPooling1D(pool_size=2))
-model.add(tf.keras.layers.Flatten())
-model.add(tf.keras.layers.RepeatVector(1))
-model.add(tf.keras.layers.LSTM(200, activation='relu', return_sequences=True))
+model.add(tf.keras.layers.GRU(units=128, return_sequences=True, input_shape=(None, num_x_signals,)))
+model.add(tf.keras.layers.GRU(units=128, activation='relu', return_sequences=True))
 model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(100, activation='relu')))
-model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(1)))
+model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(num_y_signals, activation='sigmoid')))
+
+# model = tf.keras.Sequential()
+# model.add(tf.keras.layers.Conv1D(filters=64, kernel_size=3, activation='relu', input_shape=(sequence_length, num_x_signals)))
+# model.add(tf.keras.layers.Conv1D(filters=64, kernel_size=3, activation='relu'))
+# model.add(tf.keras.layers.MaxPooling1D(pool_size=2))
+# model.add(tf.keras.layers.Flatten())
+# model.add(tf.keras.layers.RepeatVector(1))
+# model.add(tf.keras.layers.LSTM(200, activation='relu', return_sequences=True))
+# model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(100, activation='relu')))
+# model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(1)))
 
 warmup_steps = 50
 
@@ -161,16 +163,16 @@ def loss_mse_warmup(y_true, y_pred):
     return loss_mean
 
 
-optimizer = tf.keras.optimizers.RMSprop(lr=1e-3)
+optimizer = tf.keras.optimizers.Adam(lr=0.0004)
 model.compile(loss=loss_mse_warmup, optimizer=optimizer)
 model.summary()
 
-# path_checkpoint = 'weather_checkpoint.keras'
-# callback_checkpoint = ModelCheckpoint(filepath=path_checkpoint, monitor='val_loss', verbose=1, save_weights_only=True, save_best_only=True)
-# callback_early_stopping = EarlyStopping(monitor='val_loss', patience=5, verbose=1)
-# callback_tensorboard = TensorBoard(log_dir='.\\weather_logs\\', histogram_freq=0, write_graph=False)
-# callback_reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.1, min_lr=1e-4, patience=0, verbose=1)
-# callbacks = [callback_early_stopping, callback_checkpoint, callback_tensorboard, callback_reduce_lr]
+path_checkpoint = 'weather_checkpoint.keras'
+callback_checkpoint = ModelCheckpoint(filepath=path_checkpoint, monitor='val_loss', verbose=1, save_weights_only=True, save_best_only=True)
+callback_early_stopping = EarlyStopping(monitor='val_loss', patience=5, verbose=1)
+callback_tensorboard = TensorBoard(log_dir='.\\weather_logs\\', histogram_freq=0, write_graph=False)
+callback_reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.1, min_lr=1e-4, patience=0, verbose=1)
+callbacks = [callback_early_stopping, callback_checkpoint, callback_tensorboard, callback_reduce_lr]
 model.fit(generator, epochs=40, steps_per_epoch=100)
 result = model.evaluate(x=np.expand_dims(x_test_scaled, axis=0), y=np.expand_dims(y_test_scaled, axis=0))
 print("loss (test-set):", result)
