@@ -76,7 +76,7 @@ df['Various', 'Day'] = df.index.dayofyear
 df['Various', 'Hour'] = df.index.hour
 
 target_city = 'Odense'
-target_names = ['Pressure']
+target_names = ['Temp', 'WindSpeed', 'Pressure']
 shift_days = 1
 shift_steps = shift_days * 24
 
@@ -138,7 +138,7 @@ validation_data = (np.expand_dims(x_test_scaled, axis=0), np.expand_dims(y_test_
 
 model = tf.keras.Sequential()
 model.add(tf.keras.layers.GRU(units=128, return_sequences=True, input_shape=(None, num_x_signals,)))
-model.add(tf.keras.layers.GRU(units=128, activation='relu', return_sequences=True))
+model.add(tf.keras.layers.GRU(units=128, return_sequences=True))
 model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(100, activation='relu')))
 model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(num_y_signals, activation='sigmoid')))
 
@@ -163,7 +163,7 @@ def loss_mse_warmup(y_true, y_pred):
     return loss_mean
 
 
-optimizer = tf.keras.optimizers.Adam(lr=0.0004)
+optimizer = tf.keras.optimizers.Adam()
 model.compile(loss=loss_mse_warmup, optimizer=optimizer)
 model.summary()
 
