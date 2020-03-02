@@ -34,7 +34,7 @@ else:
         df_res = df_res.dropna(axis=1, how='all')
         df_res = df_res.resample('1T')
         df_res = df_res.interpolate(method='time')
-        df_res = df_res.resample('60T')
+        df_res = df_res.resample('30T')
         df_res = df_res.interpolate()
         df_res = df_res.dropna(how='all')
         df_resampled.append(df_res)
@@ -71,10 +71,8 @@ def batch_generator(batch_size, sequence_length):
     while True:
         x_shape = (batch_size, sequence_length, num_x_signals)
         x_batch = np.zeros(shape=x_shape, dtype=np.float16)
-
         y_shape = (batch_size, sequence_length, num_y_signals)
         y_batch = np.zeros(shape=y_shape, dtype=np.float16)
-
         for i in range(batch_size):
             idx = np.random.randint(num_train - sequence_length)
             x_batch[i] = x_train_scaled[idx:idx + sequence_length]
