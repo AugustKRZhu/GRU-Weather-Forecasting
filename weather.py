@@ -34,7 +34,7 @@ else:
         df_res = df_res.dropna(axis=1, how='all')
         df_res = df_res.resample('1T')
         df_res = df_res.interpolate(method='time')
-        df_res = df_res.resample('30T')
+        df_res = df_res.resample('60T')
         df_res = df_res.interpolate()
         df_res = df_res.dropna(how='all')
         df_resampled.append(df_res)
@@ -87,16 +87,15 @@ validation_data = (np.expand_dims(x_test_scaled, axis=0), np.expand_dims(y_test_
 model = tf.keras.Sequential()
 model.add(tf.keras.layers.GRU(units=128, return_sequences=True, input_shape=(None, num_x_signals,)))
 model.add(tf.keras.layers.GRU(units=128, return_sequences=True))
-model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(200, activation='relu')))
-model.add(tf.keras.layers.TimeDistributed(tf.keras.layers.Dense(num_y_signals, activation='sigmoid')))
+model.add(tf.keras.layers.Dense(400, activation='relu'))
+model.add(tf.keras.layers.Dense(num_y_signals, activation='sigmoid'))
 model.compile(loss='mse', optimizer=tf.keras.optimizers.Adam())
 model.summary()
 
 callback_checkpoint = ModelCheckpoint(filepath='weather_checkpoint.keras', monitor='val_loss', verbose=1, save_weights_only=True, save_best_only=True)
-callback_early_stopping = EarlyStopping(monitor='val_loss', patience=15, verbose=1)
+callback_early_stopping = EarlyStopping(monitor='val_loss', patience=5, verbose=1)
 callback_tensorboard = TensorBoard(log_dir='.\\weather_logs\\', histogram_freq=0, write_graph=False)
-callback_reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.9, min_lr=1e-4,verbose=1, patience=3)
-callbacks = [callback_early_stopping, callback_checkpoint, callback_tensorboard, callback_reduce_lr]
+callbacks = [callback_early_stopping, callback_checkpoint, callback_tensorboard]
 model.fit(generator, epochs=100, steps_per_epoch=100, validation_data=validation_data, verbose=0, callbacks=callbacks)
 
 
@@ -131,3 +130,6 @@ def plot_comparison(start_idx, length=100, train=True):
 
 plot_comparison(start_idx=100000, length=1000, train=True)
 plot_comparison(start_idx=200, length=1000, train=False)
+plot_comparison(start_idx=2000, length=1000, train=False)
+plot_comparison(start_idx=3000, length=1000, train=False)
+plot_comparison(start_idx=4000, length=1000, train=False)
