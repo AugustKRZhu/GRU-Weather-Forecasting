@@ -2,8 +2,8 @@
 
 ## Dataset
 #### Unprocessed dataset 
-It was taken from official NCDC website:
-https://www7.ncdc.noaa.gov/CDO/country
+It was taken from official NCDC website:  
+https://www7.ncdc.noaa.gov/CDO/country  
 **You could follow those steps to obtain dataset file by yourself:**
 - Choose **United States**, then click **Access Data/Products**
 - Choose **Surface Data, Hourly Global**
