@@ -4,13 +4,13 @@
 #### Unprocessed dataset 
 It was taken from official NCDC website:  
 https://www7.ncdc.noaa.gov/CDO/country  
-**You could follow those steps to obtain dataset file by yourself:**
+**You could follow these steps to get the custom dataset file by yourself:**
 - Choose **United States**, then click **Access Data/Products**
 - Choose **Surface Data, Hourly Global**
 - Choose **Continue With SIMPLIFIED options**
 - Select **Retieve data for: New York**
 - Select **Country: United States**
-- Then find and select required weather station:  
+- Then find and select required weather station, for example:  
   **Selected UNITED STATES stations: EAST HAMPTON AIRPORT.................... 72209864761 01/2006 to 03/2020**  
   <img src="https://raw.githubusercontent.com/dredwardhyde/gru-weather-prediction/master/dataset/station.PNG" width="700"/>
 - Then select required period:  
