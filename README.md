@@ -1,4 +1,4 @@
-## Weather prediction using GRU architecture
+## Weather Forecasting Using GRU Architecture
 
 ## Dataset
 #### Unprocessed dataset 
